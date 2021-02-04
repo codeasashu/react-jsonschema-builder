@@ -473,13 +473,11 @@ class SchemaObjectComponent extends Component {
   }
 }
 
-const SchemaObject = connect(state => ({
+export const SchemaObject = connect(state => ({
   open: state.schema.open
 }))(SchemaObjectComponent);
 
-const SchemaJson = props => {
+export const SchemaJson = props => {
   const item = mapping([], props.data, props.showEdit, props.showAdv);
   return <div className="schema-content">{item}</div>;
 };
-
-export default SchemaJson;

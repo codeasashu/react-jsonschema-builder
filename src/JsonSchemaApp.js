@@ -5,24 +5,21 @@ import {
   Tooltip,
   Col,
   Select,
-  Checkbox,
   Button,
   Modal,
   message,
   Tabs
 } from 'antd';
 import {
-  QuestionCircleOutlined, EditOutlined,
-  SettingOutlined, PlusCircleOutlined,
-  CaretDownOutlined, CaretRightOutlined
+  QuestionCircleOutlined
 } from '@ant-design/icons';
 
 import './index.css';
 import AceEditor from './components/AceEditor/AceEditor.js';
 import { connect } from 'react-redux';
-import SchemaJson from './components/SchemaComponents/SchemaJson.js';
+import { SchemaJson, SchemaObject } from './components/SchemaComponents/SchemaJson.js';
 import PropTypes from 'prop-types';
-import { SCHEMA_TYPE, debounce } from './utils.js';
+import { debounce } from './utils.js';
 import handleSchema from './schema';
 import CustomItem from './components/SchemaComponents/SchemaOther.js';
 import LocalProvider from './components/LocalProvider/index.js';
@@ -268,6 +265,9 @@ class JsonSchemaApp extends React.Component {
     } = this.state;
     const { schema } = this.props;
 
+    const initialData = {"type": "object","properties": {"field_3": {
+      "type": "string"}}}
+
     // let disabled =
     //   this.props.schema.type === 'object' || this.props.schema.type === 'array' ? false : true;
 
@@ -370,97 +370,7 @@ class JsonSchemaApp extends React.Component {
             </Col>
           )}
           <Col span={this.props.showEditor ? 16 : 24} className="wrapper object-style">
-            <Row type="flex" align="middle">
-              <Col span={1} className="down-style-col">
-                    {schema.type === 'object' ? (
-                      <span onClick={() => this.addChildField('properties')}>
-                        <Tooltip placement="top" title={LocalProvider('add_child_node')}>
-                          <PlusCircleOutlined />
-                        </Tooltip>
-                      </span>
-                    ) : null}
-              </Col>
-              <Col span={5}>
-                    <Input
-                      addonAfter={
-                        <Tooltip placement="top" title={'checked_all'}>
-                          <Checkbox
-                            checked={checked}
-                            disabled
-                            onChange={e => this.changeCheckBox(e.target.checked)}
-                          />
-                        </Tooltip>
-                      }
-                      disabled
-                      value="root"
-                    />
-              </Col>
-              <Col span={3} className="col-item col-item-type">
-                <Select
-                  className="type-select-style"
-                  onChange={e => this.changeType(`type`, e)}
-                  value={schema.type || 'object'}
-                  disabled={true}
-                >
-                  {SCHEMA_TYPE.map((item, index) => {
-                    return (
-                      <Option value={item} key={index}>
-                        {item}
-                      </Option>
-                    );
-                  })}
-                </Select>
-              </Col>
-              {this.props.isMock && (
-                <Col span={3} className="col-item col-item-mock">
-                  <MockSelect
-                    schema={schema}
-                    showEdit={() => this.showEdit([], 'mock', schema.mock, schema.type)}
-                    onChange={value => this.changeValue(['mock'], value)}
-                  />
-                </Col>
-              )}
-              <Col span={this.props.isMock ? 2 : 3} className="col-item col-item-mock">
-                <Input
-                  addonAfter={
-                    <EditOutlined onClick={() =>
-                      this.showEdit([], 'title', this.props.schema.title)
-                    } />
-                  }
-                  placeholder={'Title'}
-                  value={this.props.schema.title}
-                  onChange={e => this.changeValue(['title'], e.target.value)}
-                />
-              </Col>
-              <Col span={this.props.isMock ? 4 : 5} className="col-item col-item-desc">
-                <Input
-                  addonAfter={
-                    <EditOutlined onClick={() =>
-                      this.showEdit([], 'description', this.props.schema.description)
-                    } />
-                  }
-                  placeholder={'description'}
-                  value={schema.description}
-                  onChange={e => this.changeValue(['description'], e.target.value)}
-                />
-              </Col>
-              <Col span={2} className="col-item col-item-setting">
-                <span className="adv-set" onClick={() => this.showAdv([], this.props.schema)}>
-                  <Tooltip placement="top" title={LocalProvider('adv_setting')}>
-                    <SettingOutlined />
-                  </Tooltip>
-                </span>
-                {schema.type === 'object' ? (
-                      <span className="down-style" onClick={this.clickIcon}>
-                        {this.state.show ? (
-                          <CaretDownOutlined />
-                        ) : (
-                          <CaretRightOutlined />
-                        )}
-                      </span>
-                ) : null}
-              </Col>
-            </Row>
+            <SchemaObject data={initialData} prefix={['properties']} />
             {this.state.show && (
               <SchemaJson
                 data={this.props.schema}
