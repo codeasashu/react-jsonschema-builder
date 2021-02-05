@@ -11,7 +11,6 @@ export default class FieldSelector extends PureComponent {
 
   handleChange = e =>{
     const { onChange } = this.props;
-    console.log("lol", e.target.value)
     onChange(e.target.value);
   }
 

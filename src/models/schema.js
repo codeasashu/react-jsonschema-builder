@@ -75,7 +75,10 @@ const schemaState = {
     const keys = action.key;
     const value = action.value;
 
+    console.log('changeTypeAction1', action)
+
     let parentKeys = utils.getParentKeys(keys);
+    console.log('changeTypeAction2', parentKeys, oldState.data)
     let oldData = oldState.data;
     let parentData = utils.getData(oldData, parentKeys);
     if (parentData.type === value) {
@@ -171,22 +174,24 @@ const schemaState = {
     parentKeys.push('required');
     utils.setData(state.data, parentKeys, requiredData);
   },
+  // Child fields can only be added inside an object (having properties)
   addChildFieldAction: function(state, action, oldState) {
+    console.log('addChildField', state, action, oldState);
     const keys = action.key;
     let oldData = oldState.data;
     let propertiesData = utils.getData(oldData, keys);
     let newPropertiesData = {};
 
     newPropertiesData = Object.assign({}, propertiesData);
-    let ranName = 'field_' + fieldNum++;
-    newPropertiesData[ranName] = utils.defaultSchema.string;
+    let fieldName = 'field_' + fieldNum++;
+    newPropertiesData[fieldName] = utils.defaultSchema.string;
     utils.setData(state.data, keys, newPropertiesData);
 
     // add required
     let parentKeys = utils.getParentKeys(keys);
     let parentData = utils.getData(oldData, parentKeys);
     let requiredData = [].concat(parentData.required || []);
-    requiredData.push(ranName);
+    requiredData.push(fieldName);
     parentKeys.push('required');
     utils.setData(state.data, parentKeys, requiredData);
   },

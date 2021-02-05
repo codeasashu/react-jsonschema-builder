@@ -51,7 +51,9 @@ exports.debounce = (func, wait) => {
 
 function getData(state, keys) {
   let curState = state;
+  console.log('getData', curState, keys);
   for (let i = 0; i < keys.length; i++) {
+    console.log('getData in', curState, keys[i]);
     curState = curState[keys[i]];
   }
   return curState;

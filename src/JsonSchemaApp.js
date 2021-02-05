@@ -47,7 +47,7 @@ class JsonSchemaApp extends React.Component {
       itemKey: [],
       curItemCustomValue: null,
       checked: false,
-      editorModalName: '', // 弹窗名称desctiption | mock
+      editorModalName: '', // Popup name desctiption | mock
       mock: ''
     };
     this.Model = this.props.Model.schema;
@@ -55,7 +55,6 @@ class JsonSchemaApp extends React.Component {
     this.jsonData = null;
   }
 
-  // json 导入弹窗
   showModal = () => {
     this.setState({
       visible: true
@@ -64,14 +63,14 @@ class JsonSchemaApp extends React.Component {
   handleOk = () => {
     if (this.importJsonType !== 'schema') {
       if (!this.jsonData) {
-        return message.error('json 数据格式有误');
+        return message.error('json format is wrong');
       }
 
       let jsonData = GenerateSchema(this.jsonData);
       this.Model.changeEditorSchemaAction({ value: jsonData });
     } else {
       if (!this.jsonSchemaData) {
-        return message.error('json 数据格式有误');
+        return message.error('json schema format is wrong');
       }
       this.Model.changeEditorSchemaAction({ value: this.jsonSchemaData });
     }
@@ -81,18 +80,26 @@ class JsonSchemaApp extends React.Component {
     this.setState({ visible: false });
   };
 
-  componentWillReceiveProps(nextProps) {
-    if (typeof this.props.onChange === 'function' && this.props.schema !== nextProps.schema) {
-      let oldData = JSON.stringify(this.props.schema || '');
-      let newData = JSON.stringify(nextProps.schema || '');
+  // componentWillReceiveProps(nextProps) {
+  //   if (typeof this.props.onChange === 'function' && this.props.schema !== nextProps.schema) {
+  //     let oldData = JSON.stringify(this.props.schema || '');
+  //     let newData = JSON.stringify(nextProps.schema || '');
+  //     if (oldData !== newData) return this.props.onChange(newData);
+  //   }
+  //   if (this.props.data && this.props.data !== nextProps.data) {
+  //     this.Model.changeEditorSchemaAction({ value: JSON.parse(nextProps.data) });
+  //   }
+  // }
+
+  componentDidUpdate(prevProps) {
+    if (typeof this.props.onChange === 'function' && this.props.schema !== prevProps.schema) {
+      let oldData = JSON.stringify(prevProps.schema || '');
+      let newData = JSON.stringify(this.props.schema || '');
       if (oldData !== newData) return this.props.onChange(newData);
-    }
-    if (this.props.data && this.props.data !== nextProps.data) {
-      this.Model.changeEditorSchemaAction({ value: JSON.parse(nextProps.data) });
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     let data = this.props.data;
     if (!data) {
       data = `{
@@ -107,6 +114,7 @@ class JsonSchemaApp extends React.Component {
   getChildContext() {
     return {
       getOpenValue: keys => {
+        console.log('getOpenValue', this.props.open, keys)
         return utils.getData(this.props.open, keys);
       },
       changeCustomValue: this.changeCustomValue,
@@ -149,11 +157,6 @@ class JsonSchemaApp extends React.Component {
       return (this.jsonSchemaData = null);
     }
     this.jsonSchemaData = e.jsonData;
-  };
-  // 增加子节点
-  addChildField = key => {
-    this.Model.addChildFieldAction({ key: [key] });
-    this.setState({ show: true });
   };
 
   clickIcon = () => {
@@ -342,7 +345,7 @@ class JsonSchemaApp extends React.Component {
           />
         </Modal>
 
-        {advVisible && (
+        {/* {advVisible && (
           <Modal
             title={LocalProvider('adv_setting')}
             maskClosable={false}
@@ -356,7 +359,7 @@ class JsonSchemaApp extends React.Component {
           >
             <CustomItem data={JSON.stringify(this.state.curItemCustomValue, null, 2)} />
           </Modal>
-        )}
+        )} */}
 
         <Row>
           {this.props.showEditor && (
@@ -370,14 +373,12 @@ class JsonSchemaApp extends React.Component {
             </Col>
           )}
           <Col span={this.props.showEditor ? 16 : 24} className="wrapper object-style">
-            <SchemaObject data={initialData} prefix={['properties']} />
-            {this.state.show && (
-              <SchemaJson
+            {/* <SchemaObject data={initialData} prefix={['properties']} /> */}
+            <SchemaJson
                 data={this.props.schema}
                 showEdit={this.showEdit}
                 showAdv={this.showAdv}
-              />
-            )}
+            />
           </Col>
         </Row>
       </div>

@@ -5,9 +5,7 @@ import utils from './utils';
 export const getModel = (config = {}) => {
     if(config.lang) utils.lang = config.lang;
   
-    const Model = moox({
-        schema
-    })
+    const Model = moox({ schema })
 
     if(config.format){
         Model.__jsonSchemaFormat = config.format
